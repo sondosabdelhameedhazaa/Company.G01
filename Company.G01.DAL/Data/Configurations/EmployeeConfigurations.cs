@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Company.G01.DAL.Data.Configurations
 {
-    public class EmployeeConfigurations : IEntityTypeConfiguration<Emplyee>
+    public class EmployeeConfigurations : IEntityTypeConfiguration<Employee>
     {
-        public void Configure(EntityTypeBuilder<Emplyee> builder)
+        public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.Property(E => E.Salary).HasColumnType("decimal(18,2)");
         }

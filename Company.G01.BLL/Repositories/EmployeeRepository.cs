@@ -9,40 +9,13 @@ using Company.G01.DAL.Models;
 
 namespace Company.G01.BLL.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
-        private readonly CompanyDbContext _context;
-
-        public EmployeeRepository(CompanyDbContext context) {
-            _context = context;
-        }
-        public IEnumerable<Emplyee> GetAll()
+        public EmployeeRepository(CompanyDbContext context) : base(context) // Ask CLR To Create Object From CompanyDbContext
         {
-            return _context.Employees.ToList();
-        }
 
-        public Emplyee? Get(int id)
-        {
-            return _context.Employees.Find(id);
         }
-
-        public int Add(Emplyee model)
-        {
-            _context.Employees.Add(model);
-            return _context.SaveChanges();
-        }
-        public int Update(Emplyee model)
-        {
-            _context.Employees.Update(model);
-            return _context.SaveChanges();
-        }
-
-        public int Delete(Emplyee model)
-        {
-            _context.Employees.Remove(model);
-            return _context.SaveChanges();
-        }
-
 
     }
+
 }
