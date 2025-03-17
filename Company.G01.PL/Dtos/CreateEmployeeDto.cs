@@ -11,7 +11,8 @@ namespace Company.G01.PL.Dtos
         public int? Age { get; set; }
         [DataType(DataType.EmailAddress , ErrorMessage ="Email Is Not Valid !!")]
         public string Email { get; set; }
-        [RegularExpression(@"[0-9]{1,3}-[a-,zA-Z]{5,10}-[a-,zA-Z]{4,10}-[a-,zA-Z]{5,10}$"
+
+        [RegularExpression(@"[0-9]{1,3}-[a-zA-Z]{5,10}-[a-zA-Z]{4,10}-[a-zA-Z]{5,10}$"
             ,ErrorMessage ="Address Must Be Like --> 123-street-city-country")]
         public string Address { get; set; }
         [Phone]
@@ -24,5 +25,7 @@ namespace Company.G01.PL.Dtos
         public DateTime HiringDate { get; set; }
         [DisplayName("Date Of Creation")]
         public DateTime CreateAt { get; set; }
+
+        public int? DepartmentId { get; set; }
     }
 }

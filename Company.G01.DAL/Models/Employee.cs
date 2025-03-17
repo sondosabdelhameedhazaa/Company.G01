@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace Company.G01.DAL.Models
 {
     public class Employee : BaseEntity
     {
-        public int ID { get; set; }
+   
         public string Name { get; set; }
         public int? Age { get; set; }
         public string Email { get; set; }
@@ -19,6 +20,11 @@ namespace Company.G01.DAL.Models
         public bool IsDeleted { get; set; }
         public DateTime HiringDate { get; set; }
         public DateTime CreateAt { get; set; }
+
+        [DisplayName("Department")]
+
+        public int? DepartmentId { get; set; }
+        public Department? Department { get; set; }
 
 
     }
