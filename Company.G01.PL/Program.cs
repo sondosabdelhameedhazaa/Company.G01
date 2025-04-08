@@ -1,6 +1,8 @@
+using Company.G01.BLL;
 using Company.G01.BLL.Interfaces;
 using Company.G01.BLL.Repositories;
 using Company.G01.DAL.Data.Contexts;
+using Company.G01.PL.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -14,12 +16,17 @@ namespace Company.G01.PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews(); // Register built-in MVC service
-             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>(); // Allow DI for DepartmentRepository
-            builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>(); // Allow DI For EmployeeRepository
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); // Allow DI for DepartmentRepository
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); // Allow DI For EmployeeRepository
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+            
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             }); // Allow DI for CompanyDbContext
+
+            builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

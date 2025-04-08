@@ -13,47 +13,48 @@ namespace Company.G01.BLL.Repositories
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly CompanyDbContext _context;
-        public GenericRepository (CompanyDbContext context)
+        public GenericRepository(CompanyDbContext context)
         {
             _context = context;
         }
-        public IEnumerable<T> GetAll()
-        {
-            if(typeof(T) == typeof(Employee))
-                {
-                return (IEnumerable<T>) _context.Employees.Include(E => E.Department).ToList();
-            }
-            return _context.Set<T>().ToList();
-        }
-        public T? Get(int id)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Employee))
             {
-                return (IEnumerable<T>)_context.Employees.Include(E => E.Department).FirstOrDefault(E => E.Id == id) as T;
+                return (IEnumerable<T>)await _context.Employees.Include(E => E.Department).ToListAsync();
+            }
+
+            return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<T?> GetAsync(int id)
+        {
+            if (typeof(T) == typeof(Employee))
+            {
+
+                return await _context.Employees.Include(E => E.Department).FirstOrDefaultAsync(E => E.Id == id) as T;
+
             }
             return _context.Find<T>(id);
         }
-        public int Add(T model)
+
+
+        public async Task AddAsync(T model)
         {
-            _context.Set<T>().Add(model);
-            return _context.SaveChanges();
-        }
-        public int Update(T model)
-        {
-            _context.Set<T>().Update(model);
-            return _context.SaveChanges();
+            await _context.AddAsync(model);
         }
 
-        public int Delete(T model)
+        public void Update(T model)
         {
-            _context.Set<T>().Remove(model);
-            return _context.SaveChanges();
+            _context.Update(model);
         }
 
-     
+        public void Delete(T model)
+        {
+            _context.Remove(model);
+        }
 
        
 
-     
     }
 }
