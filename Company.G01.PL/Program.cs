@@ -2,7 +2,9 @@ using Company.G01.BLL;
 using Company.G01.BLL.Interfaces;
 using Company.G01.BLL.Repositories;
 using Company.G01.DAL.Data.Contexts;
+using Company.G01.DAL.Models;
 using Company.G01.PL.Mapping;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -27,6 +29,32 @@ namespace Company.G01.PL
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
+
+
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<CompanyDbContext>().AddDefaultTokenProviders();
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Account/SignIn";
+                config.AccessDeniedPath = "/Account/AccessDenied";
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -42,7 +70,10 @@ namespace Company.G01.PL
 
             app.UseRouting();
 
-            
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+
 
             app.MapControllerRoute(
                 name: "default",

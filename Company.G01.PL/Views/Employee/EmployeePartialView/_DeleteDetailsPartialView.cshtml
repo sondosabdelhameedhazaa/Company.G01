@@ -2,6 +2,11 @@
 @{
     var Departments = new SelectList(ViewData["departments"] as IEnumerable<Department> ?? new List<Department>(), "Id", "Name");
 }
+<div class="d-flex justify-content-center my-3">
+    <td>
+        <img src="@Url.Content("~/files/images/" + Model.ImageName)" class="img-fluid rounded-circle" style="width: 150px; height: 150px;" />
+    </td>
+</div>
 
 <div class="my-3">
     <label asp-for="Name" class="col-form-label"></label>
@@ -48,14 +53,17 @@
 
 </div>
 <div class="my-3">
-    <label asp-for="HiringDate" class="col-form-label"></label>
-    <input asp-for="HiringDate" class="form-control" readonly />
-</div>
-<div class="my-3">
-    <label asp-for="CreateAt" class="col-form-label"></label>
-    <input asp-for="CreateAt" class="form-control" readonly />
+    <label asp-for="HirringDate" class="col-form-label"></label>
+    <input asp-for="HirringDate" class="form-control" readonly />
 </div>
 <div class="my-3">
     <label asp-for="DepartmentId" class="col-form-label"></label>
-    <input asp-for="DepartmentId" class="form-control" readonly />
+    <select asp-for="DepartmentId" asp-items="@Departments" class="form-control" disabled>
+        <option value="">-- Select department --</option>
+    </select>
+    <input type="hidden" asp-for="DepartmentId" />
+</div>
+<div class="my-3">
+    <label asp-for="Image" class="col-form-label"></label>
+    <input asp-for="Image" class="form-control" disabled />
 </div>
