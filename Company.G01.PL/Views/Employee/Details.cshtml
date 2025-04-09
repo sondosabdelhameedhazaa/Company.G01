@@ -1,5 +1,6 @@
 ﻿@model CreateEmployeeDto
 @{
+
     ViewData["Title"] = "Details";
     var id = ViewData["id"];
     var Departments = new SelectList(ViewData["departments"] as IEnumerable<Department> ?? new List<Department>(), "Id", "Name");
@@ -11,7 +12,8 @@
 <br />
 <div>
     <partial name="EmployeePartialView/_DeleteDetailsPartialView" />
-
-    <a asp-route="@Model." asp-action="Edit" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-light">Back To List</a>
+    <div class="my-3">
+        <a asp-action="Edit" asp-route-id="@id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-light">Back to List</a>
+    </div>
 </div>
