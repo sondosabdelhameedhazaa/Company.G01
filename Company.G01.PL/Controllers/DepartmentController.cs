@@ -140,6 +140,7 @@ namespace Company.G01.PL.Controllers
         }
 
         [HttpPost]
+       
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

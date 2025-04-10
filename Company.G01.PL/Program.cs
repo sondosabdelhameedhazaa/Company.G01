@@ -3,7 +3,11 @@ using Company.G01.BLL.Interfaces;
 using Company.G01.BLL.Repositories;
 using Company.G01.DAL.Data.Contexts;
 using Company.G01.DAL.Models;
+using Company.G01.PL.Helpers;
 using Company.G01.PL.Mapping;
+using Company.G01.PL.Settings;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -15,6 +19,28 @@ namespace Company.G01.PL
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+
+            }).AddGoogle(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                o.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+            });
+
+            builder.Services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = FacebookDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = FacebookDefaults.AuthenticationScheme;
+
+            }).AddFacebook(o =>
+            {
+                o.ClientId = builder.Configuration["Authentication:Facebook:AppId"];
+                o.ClientSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews(); // Register built-in MVC service
@@ -29,7 +55,11 @@ namespace Company.G01.PL
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new EmployeeProfile()));
 
+            
 
+
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+            builder.Services.AddScoped<IMailService, MailService>();
 
 
             builder.Services.AddIdentity<AppUser, IdentityRole>()
