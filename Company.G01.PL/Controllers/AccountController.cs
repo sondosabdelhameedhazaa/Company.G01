@@ -2,6 +2,8 @@
 using Company.G01.PL.Dtos;
 using Company.G01.PL.Helpers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,18 +16,18 @@ namespace Company.G01.PL.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        //private readonly IMailService _mailService;
+        private readonly IMailService _mailService;
         //private readonly ITwilioService _twilioService;
 
         public AccountController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager
-            //IMailService mailService,
+            SignInManager<AppUser> signInManager,
+            IMailService mailService
             //ITwilioService twilioService
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            //_mailService = mailService;
+            _mailService = mailService;
             //_twilioService = twilioService;
         }
 
@@ -163,7 +165,7 @@ namespace Company.G01.PL.Controllers
                     //            // Send Email
 
                     //var flag=EmailSettings.SendEmail(email); // Old way
-                    // _mailService.SendEmail(email);
+                     _mailService.SendEmail(email);
                     return RedirectToAction("CheckYourInbox");
 
                 }
@@ -264,6 +266,59 @@ namespace Company.G01.PL.Controllers
 
         #endregion
 
+
+
+        public IActionResult GoogleLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("GoogleResponse")
+            };
+            return Challenge(prop, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Type,
+                    claim.Value,
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                }
+                );
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult FacebookLogin()
+        {
+            var prop = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+            return Challenge(prop, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(FacebookDefaults.AuthenticationScheme);
+
+            var cliams = result.Principal.Identities.FirstOrDefault().Claims.Select(
+                claim => new
+                {
+                    claim.Type,
+                    claim.Value,
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                }
+                );
+
+            return RedirectToAction("Index", "Home");
+        }
 
 
 

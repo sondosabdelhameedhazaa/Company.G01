@@ -44,6 +44,10 @@ namespace Company.G01.PL.Controllers
                 employees = await _unitOfWork.EmployeeRepository.GetByNameAsync(SearchInput);
             }
 
+
+
+
+
             // Dictionary :
             // 1. ViewData : transfer extra information from controller to view
             // ViewData["Message"] = " Hello From View Data ";
@@ -56,6 +60,29 @@ namespace Company.G01.PL.Controllers
 
             return View(employees);
         }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> Search(string? SearchInput)
+        {
+            IEnumerable<Employee> employees;
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+                employees = await _unitOfWork.EmployeeRepository.GetAllAsync();
+
+            }
+            else
+            {
+                employees = await _unitOfWork.EmployeeRepository.GetByNameAsync(SearchInput);
+            }
+
+            return PartialView("EmployeePartialView/EmployeesTablePartialView", employees);
+        }
+
+
+
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
