@@ -1,14 +1,14 @@
-﻿@model Department;
+﻿@model UserToReturnDTO
 @{
     ViewData["Title"] = "Edit";
+
 }
 
-<h1>Edit Department</h1>
-<br />
-<br />
-
-<form asp-action="Edit">
-    <partial name="DepartmentPartialView/_CreateEditPartialView" />
+<h1>Edit</h1>
+<br />  
+<br />  
+<form asp-action="Edit" enctype="multipart/form-data">
+    <partial name="EmployeePartialView/_CreateEditPartialView" />
     <div class="my-3">
         <input type="submit" value="Save" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-light">Back to List</a>

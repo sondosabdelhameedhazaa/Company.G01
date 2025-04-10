@@ -53,7 +53,7 @@ namespace Company.G01.PL.Controllers
             if (id is null) return BadRequest("Invalid Id");
             var user = await _userManager.FindByIdAsync(id);
 
-            if (user is null) return NotFound(new { StatusCode = 404, Message = $"Employee with Id: {id} is Not found" });
+            if (user is null) return NotFound(new { StatusCode = 404, Message = $"User with Id: {id} is Not found" });
             var dto = new UserToReturnDTO()
             {
                 Id = user.Id,
