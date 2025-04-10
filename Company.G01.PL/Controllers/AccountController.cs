@@ -80,8 +80,6 @@ namespace Company.G01.PL.Controllers
         #endregion
 
 
-
-
         #region SignIn
 
         [HttpGet]
@@ -127,6 +125,146 @@ namespace Company.G01.PL.Controllers
         }
 
         #endregion
+
+
+
+
+        #region Forget Password
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+                    // Genrate Token
+
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    //Create URL
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    // Create Email
+                    var email = new Helpers.Email()
+                    {
+                        To = model.Email,
+                        Subject = "Company Reset Password",
+                        Body = url
+                    };
+                    //            // Send Email
+
+                    //var flag=EmailSettings.SendEmail(email); // Old way
+                    // _mailService.SendEmail(email);
+                    return RedirectToAction("CheckYourInbox");
+
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid Reset Password");
+            return View("ForgetPassword", model);
+        }
+
+        public IActionResult CheckYourPhone()
+        {
+            return View();
+        }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendSms(ForgetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user is not null)
+                {
+                    // Genrate Token
+
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    //Create URL
+
+                    var url = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    // Create Sms
+                    //var sms = new Sms()
+                    //{
+                    //    To = user.PhoneNumber,
+                    //    Body = url
+                    //};
+                    // Send sms
+
+                    //var flag=EmailSettings.SendEmail(email); // Old way
+                   // _twilioService.SendSms(sms);
+                    return RedirectToAction("CheckYourPhone");
+
+                }
+            }
+
+            ModelState.AddModelError("", "Invalid Reset Password");
+            return View("ForgetPassword", model);
+        }
+
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+
+        #endregion
+
+
+        #region Reset Password
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["email"] as string;
+                var token = TempData["token"] as string;
+
+                if (email == null || token == null)
+                {
+                    return BadRequest("Invalid Operation");
+                }
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("SignIn");
+                    }
+                }
+                ModelState.AddModelError("", "Invalid reset Password operation");
+            }
+            return View();
+        }
+
+        #endregion
+
+
 
 
 
